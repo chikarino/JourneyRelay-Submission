@@ -1,0 +1,60 @@
+@import "tailwindcss";
+
+/* Design tokens from cathaypacific.com's public CSS (REDESIGN.md §2).
+   Cathay's typefaces are proprietary; its Chinese-language pages use the
+   system sans-serif, and so do we. Use these names in Tailwind classes,
+   e.g. bg-cx-green, text-ink-2, border-line. */
+@theme {
+  --font-sans: -apple-system, BlinkMacSystemFont, "PingFang TC", "PingFang HK", "Noto Sans TC",
+    "Microsoft JhengHei", "Helvetica Neue", Arial, sans-serif;
+
+  --color-cx-green: #2c4036;      /* primary button */
+  --color-cx-green-dark: #002527;
+  --color-cx-jade: #367878;       /* links, selected, success */
+  --color-cx-jade-dark: #163230;
+  --color-cx-jade-90: #d2e6e8;
+  --color-cx-jade-95: #e8f3f4;
+  --color-cx-gold: #886521;
+  --color-cx-gold-bg: #f0eadf;
+
+  --color-ink: #2d2d2d;
+  --color-ink-2: #66686a;
+  --color-ink-3: #8f9193;
+  --color-line: #e6e7e8;
+  --color-line-strong: #bcbec0;
+  --color-paper: #f5f5f5;
+  --color-paper-light: #f9f9f9;
+  --color-paper-warm: #f7f6f1;
+  --color-new: #fffaf0;           /* rows added by a mid-journey update */
+
+  --color-error: #d11f00;
+  --color-error-bg: #ffeeeb;
+  --color-reminder: #7f6b00;
+  --color-reminder-bg: #f7f1e1;
+
+  --animate-flash: flash 2.4s ease-out;
+  --animate-rise: rise 0.2s ease-out;
+
+  @keyframes flash {
+    0% { background-color: var(--color-cx-gold-bg); }
+    100% { background-color: transparent; }
+  }
+  /* Movement only, no fade: if an animation never runs, the element still shows. */
+  @keyframes rise {
+    from { transform: translateY(12px); }
+    to { transform: none; }
+  }
+}
+
+@layer base {
+  body {
+    @apply bg-paper font-sans text-base text-ink antialiased;
+  }
+  :focus-visible {
+    outline: 3px solid var(--color-cx-jade);
+    outline-offset: 2px;
+  }
+  button:not(:disabled) {
+    cursor: pointer;
+  }
+}

@@ -1,0 +1,90 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    name: Tests and type-check
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: prototype
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: prototype/frontend/package-lock.json
+
+      - name: Install backend dependencies
+        run: pip install -r backend/requirements.txt
+
+      # A scripted engine stands in for the AI, so no model or API key is needed.
+      - name: Backend tests
+        run: python -m unittest discover -s tests -v
+
+      - name: Install frontend dependencies
+        working-directory: prototype/frontend
+        run: npm ci --no-audit --no-fund
+
+      - name: Type-check frontend
+        working-directory: prototype/frontend
+        run: npx tsc --noEmit
+
+      - name: Frontend API tests
+        working-directory: prototype/frontend
+        run: npm test
+
+  launcher:
+    name: Launcher (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - macos-latest
+          - windows-latest
+    defaults:
+      run:
+        working-directory: prototype
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      # The launcher is standard-library only, so no install step.
+      - name: Check launcher prerequisites
+        run: python scripts/run_demo.py --check
+
+      - name: Launcher tests
+        run: python -m unittest discover -s tests -p test_run_demo.py -v

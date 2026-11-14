@@ -1,0 +1,26 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# Local demo database (rebuilt by `python -m backend.seed`)
+backend/journeyrelay.db
+backend/journeyrelay.db-wal
+backend/journeyrelay.db-shm
+
+# Node / Next.js
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/next-env.d.ts
+*.tsbuildinfo
+
+# Secrets (API keys) — commit .env.example only
+.env
+.env.*
+!.env.example
+
+# Scratch and logs
+_t.json
+*.log
+.runtime/
